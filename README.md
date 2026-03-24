@@ -214,3 +214,223 @@ function calculateTotalAmountByDate(transactions, year, month, day){
     return sum;
 }
 ```
+
+### 2.4 Фильтрация по типу транзакции
+
+Функция getTransactionByType возвращает массив транзакций заданного типа (debit или credit).
+
+```js
+function getTransactionByType(transactions, type){
+    let results = [];
+    for (let i = 0; i < transactions.length; i++){
+        if(transactions[i].transaction_type == type){
+            results.push(transactions[i]);
+        }
+    }
+    return results;
+}
+```
+
+### 2.5 Фильтрация по диапазону дат
+
+Функция getTransactionsInDateRange возвращает транзакции, дата которых находится в заданном диапазоне.
+
+```js
+function getTransactionsInDateRange(transactions, startDate, endDate){
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let result = [];
+    for(let i = 0; i < transactions.length; i++){
+        const tDate = new Date(transactions[i].transaction_date);
+        if(tDate >= start && tDate <= end){
+            result.push(transactions[i]);
+        }
+    }
+    return result;
+}
+```
+
+### 2.6 Фильтрация по магазину
+
+Функция getTransactionsByMerchant возвращает транзакции по заданному merchant_name.
+
+```js
+function getTransactionsByMerchant(transactions, merchantName){
+    let result = [];
+    for(let i = 0; i < transactions.length; i++){
+        if(transactions[i].merchant_name == merchantName){
+            result.push(transactions[i]);
+        }
+    }
+    return result;
+}
+```
+
+### 2.7 Среднее значение транзакций
+
+Функция calculateAverageTransactionAmount вычисляет среднее значение всех транзакций.
+
+```js
+function calculateAverageTransactionAmount(transactions){
+    let sum = 0;
+    if (transactions.length === 0) return 0;
+    for(let i = 0; i < transactions.length; i++){
+        sum += transactions[i].transaction_amount;
+    } 
+    let average = sum / transactions.length;
+    return average;
+}
+```
+
+### 2.8 Фильтрация по диапазону суммы
+
+Функция getTransactionsByAmountRange возвращает транзакции, сумма которых находится в заданном диапазоне.
+
+```js
+function getTransactionsByAmountRange(transactions, minAmount, maxAmount){
+    let result = [];
+    for(let i = 0; i < transactions.length; i++){
+        if(transactions[i].transaction_amount >= minAmount && transactions[i].transaction_amount <= maxAmount){
+            result.push(transactions[i]);
+        }
+    }
+    return result;
+}
+```
+
+### 2.9 Сумма дебетовых транзакций
+
+Функция calculateTotalDebitAmount вычисляет сумму всех транзакций типа debit.
+
+```js
+function calculateTotalDebitAmount(transactions){
+    let sum = 0;
+    for(let i = 0; i < transactions.length; i++){
+        if(transactions[i].transaction_type === 'debit'){
+            sum += transactions[i].transaction_amount;
+        }
+    }
+    return sum;
+}
+```
+
+### 2.10 Месяц с наибольшим количеством транзакций
+
+Функция findMostTransactionsMonth определяет месяц, в котором было совершено наибольшее количество транзакций.
+
+```js
+function findMostTransactionsMonth(transactions){
+    let maxTransaction;
+    let maxCount = 0;
+    for(let i = 0; i < transactions.length; i++){
+        let count = 1;
+        for(let j = i + 1; j < transactions.length; j++){
+            if(transactions[i].transaction_date.slice(0, 7) === transactions[j].transaction_date.slice(0, 7)){
+                count++;
+            }
+        }
+        if(maxCount < count){
+            maxCount = count;
+            maxTransaction = transactions[i].transaction_date.slice(5, 7);
+        }
+    }
+    return maxTransaction;
+}
+```
+
+### 2.11 Месяц с наибольшим количеством debit-транзакций
+
+Функция findMostDebitTransactionMonth определяет месяц с максимальным количеством дебетовых операций.
+
+```js
+function findMostDebitTransactionMonth(transactions){
+    let maxTransaction;
+    let maxCount = 0;
+    for(let i = 0; i < transactions.length; i++){
+        let count = 1;
+        for(let j = i + 1; j < transactions.length; j++){
+            if(transactions[i].transaction_type === 'debit'){
+                if(transactions[i].transaction_date.slice(0, 7) === transactions[j].transaction_date.slice(0, 7)){
+                    count++;
+                }
+            }
+        }
+        if(maxCount < count){
+            maxCount = count;
+            maxTransaction = transactions[i].transaction_date.slice(5, 7);
+        }
+    }
+    return maxTransaction;
+}
+```
+
+### 2.12 Определение преобладающего типа транзакций
+
+Функция mostTransactionTypes сравнивает количество debit и credit транзакций и возвращает результат:
+
+* debit
+* credit
+* equal
+
+```js
+function mostTransactionTypes(transactions){
+    let countDebit = 0;
+    let countCredit = 0;
+    for(let i = 0; i < transactions.length; i++){
+        if(transactions[i].transaction_type === 'debit'){
+            countDebit++;
+        }
+        if(transactions[i].transaction_type === 'credit'){
+            countCredit++;
+        }
+    }
+    if(countCredit > countDebit){
+        return 'credit';
+    }
+    if(countDebit > countCredit){
+        return 'debit';
+    }
+    return 'equal';
+}
+```
+
+### 2.13 Транзакции до указанной даты
+
+Функция getTransactionsBeforeDate возвращает все транзакции, совершённые до заданной даты.
+
+```js
+function getTransactionsBeforeDate(transactions, date){
+    let results = [];
+    const user_date = new Date(date);
+    for(let i = 0; i < transactions.length; i++){
+        const tDate = new Date(transactions[i].transaction_date);
+        if(user_date > tDate){
+            results.push(transactions[i]);
+        }
+    }
+    return results;
+}
+```
+
+### 2.14 Поиск транзакции по ID
+
+Функция findTransactionById выполняет поиск транзакции по уникальному идентификатору.
+
+```js
+const findTransactionById = (transactions, id) => 
+    transactions.find(t => String(t.transaction_id) === String(id)) || null;
+```
+
+### 2.15 Получение описаний транзакций
+
+Функция mapTransactionDescriptions возвращает массив, содержащий только описания транзакций.
+
+```js
+function mapTransactionDescriptions(transactions){
+    let descriptions = [];
+    for(let i = 0; i < transactions.length; i++){
+        descriptions.push(transactions[i].transaction_description);
+    }
+    return descriptions;
+}
+```
